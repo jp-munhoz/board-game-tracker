@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Board Game Tracker</title>
+    <title>Criar conta - Board Game Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,27 +16,33 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
-    <main class="board">
-        <div id="app-nav"></div>
+    <main class="board board-narrow">
         <header class="board-header">
             <span class="dice">🎲</span>
             <div>
                 <h1>Board Game Tracker</h1>
-                <p class="subtitle">Busque jogos no acervo da Ludopedia</p>
+                <p class="subtitle">Crie sua conta</p>
             </div>
             <span class="dice">🎲</span>
         </header>
 
-        <form id="search-form" class="search-form">
-            <input type="text" id="search-input" placeholder="Nome do jogo (ex: Catan)" autocomplete="off" required>
-            <button type="submit">Buscar 🔍</button>
+        <form id="register-form" class="search-form login-form">
+            <input type="text" id="username" placeholder="Usuário (login)" autocomplete="username" required>
+            <input type="text" id="display-name" placeholder="Como deve ser chamado" autocomplete="nickname" required>
+            <input type="password" id="password" placeholder="Senha" autocomplete="new-password" required minlength="8">
+            <ul id="password-requirements" class="password-requirements">
+                <li data-rule="length">Mínimo de 8 caracteres</li>
+                <li data-rule="uppercase">Uma letra maiúscula</li>
+                <li data-rule="special">Um caractere especial (ex: !@#$%)</li>
+            </ul>
+            <input type="password" id="password-confirm" placeholder="Confirmar senha" autocomplete="new-password" required minlength="8">
+            <button type="submit">Criar conta</button>
         </form>
 
         <p id="status" class="status"></p>
-        <ul id="results" class="results"></ul>
+        <p class="auth-switch"><a href="/login.html">Já tenho conta</a></p>
     </main>
-    <script src="/js/nav.js"></script>
-    <script src="/js/search.js"></script>
+    <script src="/js/cadastro.js"></script>
     <script src="/js/register-sw.js"></script>
 </body>
 </html>

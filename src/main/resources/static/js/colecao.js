@@ -8,12 +8,34 @@ const viewedUsername = params.get('user');
 const isOwnCollection = !viewedUsername;
 
 if (!isOwnCollection) {
-    titleEl.textContent = `Coleção de ${viewedUsername}`;
+    setFriendTitle(params.get('name'));
     subtitleEl.textContent = 'Somente leitura';
-    document.title = `Coleção de ${viewedUsername} - Board Game Tracker`;
 }
 
 loadCollection();
+
+async function setFriendTitle(nameFromQuery) {
+    let displayName = nameFromQuery;
+    if (!displayName) {
+        displayName = await resolveDisplayName(viewedUsername);
+    }
+    titleEl.textContent = `Coleção de ${displayName}`;
+    document.title = `Coleção de ${displayName} - Board Game Tracker`;
+}
+
+async function resolveDisplayName(username) {
+    try {
+        const response = await fetch('/api/users');
+        if (!response.ok) {
+            return username;
+        }
+        const users = await response.json();
+        const match = users.find(u => u.username === username);
+        return match ? match.displayName : username;
+    } catch (err) {
+        return username;
+    }
+}
 
 async function loadCollection() {
     status.classList.remove('error');

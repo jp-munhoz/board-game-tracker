@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Categoria - Board Game Tracker</title>
+    <title>Sessões - Board Game Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,26 +18,21 @@
 <body>
     <main class="board">
         <div id="app-nav"></div>
-        <a href="/index.html" class="back-link">&larr; Voltar à busca</a>
+        <a href="/sessoes.html" id="sessions-back-link" class="back-link hidden">&larr; Meus jogos</a>
         <header class="board-header">
-            <span class="dice">🗡️</span>
+            <span class="dice">🎲</span>
             <div>
-                <h1 id="category-title">Categoria</h1>
-                <p class="subtitle">Ranking de jogos na Ludopedia</p>
+                <h1 id="sessions-title">Sessões</h1>
+                <p class="subtitle" id="sessions-subtitle">Escolha um jogo da sua coleção para registrar sessões</p>
             </div>
-            <span class="dice">🗡️</span>
+            <span class="dice">🎲</span>
         </header>
 
         <p id="status" class="status"></p>
-        <ul id="results" class="results"></ul>
-        <div id="pagination-controls" class="pagination-controls hidden">
-            <button id="prev-page" type="button" class="page-nav-btn">&larr; Anterior</button>
-            <span id="page-info" class="page-info"></span>
-            <button id="next-page" type="button" class="page-nav-btn">Próxima &rarr;</button>
-        </div>
+        <div id="sessions-body"></div>
     </main>
     <script src="/js/nav.js"></script>
-    <script src="/js/categoria.js"></script>
+    <script src="/js/sessoes.js"></script>
     <script src="/js/register-sw.js"></script>
 </body>
 </html>

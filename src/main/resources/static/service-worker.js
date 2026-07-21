@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v5';
 const STATIC_CACHE = `bgt-static-${CACHE_VERSION}`;
 const API_CACHE = `bgt-api-${CACHE_VERSION}`;
 
@@ -7,8 +7,9 @@ const PRECACHE_URLS = [
     '/index.html',
     '/login.html',
     '/colecao.html',
+    '/desejos.html',
+    '/sessoes.html',
     '/jogo.html',
-    '/categoria.html',
     '/amigos.html',
     '/manifest.json',
     '/css/style.css',
@@ -16,8 +17,9 @@ const PRECACHE_URLS = [
     '/js/login.js',
     '/js/search.js',
     '/js/colecao.js',
+    '/js/desejos.js',
+    '/js/sessoes.js',
     '/js/details.js',
-    '/js/categoria.js',
     '/js/amigos.js',
     '/js/register-sw.js',
     '/icons/icon-192.png',

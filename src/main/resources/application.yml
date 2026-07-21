@@ -2,9 +2,9 @@ spring:
   application:
     name: board-game-tracker
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://aws-1-sa-east-1.pooler.supabase.com:5432/postgres?sslmode=require
+    username: postgres.aynplvzxchiweomeapcy
+    password: tabuleiroamigos
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 3
@@ -40,7 +40,7 @@ server:
 ludopedia:
   base-url: https://ludopedia.com.br/api/v1
   # access_token do app registrado em https://ludopedia.com.br/aplicativos.
-  access-token: ${LUDOPEDIA_ACCESS_TOKEN}
+  access-token: 2ea9b8f4fcf3c7c672c1bfbcb9657e7f
   connect-timeout: 5s
   read-timeout: 10s
   # timeout do scrape da pagina publica do jogo (usado para obter a descricao, que a LudoAPI nao expoe)

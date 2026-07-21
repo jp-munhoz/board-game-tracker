@@ -11,12 +11,9 @@ import br.com.bg.ludopedia.client.dto.LudopediaMechanic;
 import br.com.bg.ludopedia.client.dto.LudopediaProfessional;
 import br.com.bg.ludopedia.client.dto.LudopediaTheme;
 import br.com.bg.ludopedia.client.scraper.LudopediaGamePageScraper;
-import br.com.bg.ludopedia.client.scraper.LudopediaRankingScraper;
-import br.com.bg.ludopedia.client.scraper.RankingGame;
 import br.com.bg.ludopedia.exception.LudopediaGameNotFoundException;
 import br.com.bg.ludopedia.web.dto.LudopediaGameDetailsResponse;
 import br.com.bg.ludopedia.web.dto.LudopediaGameSummaryResponse;
-import br.com.bg.ludopedia.web.dto.RankingGameResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +24,12 @@ public class LudopediaGameService {
 
     private final LudopediaClient client;
     private final LudopediaGamePageScraper pageScraper;
-    private final LudopediaRankingScraper rankingScraper;
     private final GameRepository gameRepository;
 
     public LudopediaGameService(LudopediaClient client, LudopediaGamePageScraper pageScraper,
-                                 LudopediaRankingScraper rankingScraper, GameRepository gameRepository) {
+                                 GameRepository gameRepository) {
         this.client = client;
         this.pageScraper = pageScraper;
-        this.rankingScraper = rankingScraper;
         this.gameRepository = gameRepository;
     }
 
@@ -86,20 +81,6 @@ public class LudopediaGameService {
                 mapProfessionals(details.designers()),
                 mapProfessionals(details.artistas()));
         return gameRepository.save(game);
-    }
-
-    public List<RankingGameResponse> getRankingByCategory(int idCategoria) {
-        return rankingScraper.fetchByCategory(idCategoria).stream().map(this::toRanking).toList();
-    }
-
-    private RankingGameResponse toRanking(RankingGame game) {
-        return new RankingGameResponse(
-                game.idJogo(),
-                game.nome(),
-                game.thumb(),
-                game.ano(),
-                game.link(),
-                game.rank());
     }
 
     private LudopediaGameSummaryResponse toSummary(LudopediaGameSummary summary) {

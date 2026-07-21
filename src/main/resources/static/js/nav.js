@@ -30,6 +30,8 @@ function renderNav(user) {
         <nav class="app-nav">
             <a href="/index.html" class="app-nav-link ${path.endsWith('index.html') || path === '/' ? 'active' : ''}">🔍 Buscar</a>
             <a href="/colecao.html" class="app-nav-link ${path.endsWith('colecao.html') && !window.location.search ? 'active' : ''}">❤️ Coleção</a>
+            <a href="/desejos.html" class="app-nav-link ${path.endsWith('desejos.html') ? 'active' : ''}">⭐ Desejos</a>
+            <a href="/sessoes.html" class="app-nav-link ${path.endsWith('sessoes.html') ? 'active' : ''}">🎲 Sessões</a>
             <a href="/amigos.html" class="app-nav-link ${path.endsWith('amigos.html') ? 'active' : ''}">👥 Amigos</a>
             <span class="app-nav-user">${escapeHtml(user.displayName)}</span>
             <button type="button" id="logout-btn" class="app-nav-logout">Sair</button>
@@ -47,6 +49,8 @@ function renderOfflineNav() {
         <nav class="app-nav">
             <a href="/index.html" class="app-nav-link">🔍 Buscar</a>
             <a href="/colecao.html" class="app-nav-link">❤️ Coleção</a>
+            <a href="/desejos.html" class="app-nav-link">⭐ Desejos</a>
+            <a href="/sessoes.html" class="app-nav-link">🎲 Sessões</a>
             <a href="/amigos.html" class="app-nav-link">👥 Amigos</a>
             <span class="app-nav-user">📴 Offline</span>
         </nav>

@@ -7,13 +7,18 @@ async function loadFriends() {
     status.classList.remove('error');
     status.textContent = 'Carregando...';
     try {
-        const response = await fetch('/api/users');
-        if (!response.ok) {
-            throw new Error(`Erro ${response.status}`);
+        const [usersResponse, meResponse] = await Promise.all([
+            fetch('/api/users'),
+            fetch('/api/auth/me')
+        ]);
+        if (!usersResponse.ok) {
+            throw new Error(`Erro ${usersResponse.status}`);
         }
-        const users = await response.json();
+        const allUsers = await usersResponse.json();
+        const me = meResponse.ok ? await meResponse.json() : null;
+        const users = me ? allUsers.filter(user => user.username !== me.username) : allUsers;
         if (users.length === 0) {
-            status.textContent = 'Nenhuma pessoa cadastrada ainda.';
+            status.textContent = 'Nenhum amigo cadastrado ainda.';
             results.innerHTML = '';
             return;
         }
@@ -29,7 +34,7 @@ function renderFriend(user, index) {
     const delay = Math.min(index * 0.05, 0.4);
     return `
         <li class="result-item" style="animation-delay: ${delay}s">
-            <a class="result-link" href="/colecao.html?user=${encodeURIComponent(user.username)}">
+            <a class="result-link" href="/colecao.html?user=${encodeURIComponent(user.username)}&name=${encodeURIComponent(user.displayName)}">
                 <span class="result-name">${escapeHtml(user.displayName)}</span>
             </a>
         </li>

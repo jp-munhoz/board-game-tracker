@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Detalhes do Jogo - Board Game Tracker</title>
+    <title>Lista de Desejos - Board Game Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,12 +18,20 @@
 <body>
     <main class="board">
         <div id="app-nav"></div>
-        <a href="javascript:history.back()" class="back-link">&larr; Voltar</a>
+        <header class="board-header">
+            <span class="dice">⭐</span>
+            <div>
+                <h1>Lista de Desejos</h1>
+                <p class="subtitle">Jogos que você quer ter, com um espaço para anotações ou link de compra</p>
+            </div>
+            <span class="dice">⭐</span>
+        </header>
+
         <p id="status" class="status"></p>
-        <div id="content"></div>
+        <ul id="results" class="wishlist-list"></ul>
     </main>
     <script src="/js/nav.js"></script>
-    <script src="/js/details.js"></script>
+    <script src="/js/desejos.js"></script>
     <script src="/js/register-sw.js"></script>
 </body>
 </html>

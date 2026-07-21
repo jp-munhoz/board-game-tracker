@@ -4,8 +4,10 @@ const status = document.getElementById('status');
 const results = document.getElementById('results');
 
 let collectionIds = new Set();
+let wishlistIds = new Set();
 
 loadCollectionIds();
+loadWishlistIds();
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -34,7 +36,8 @@ form.addEventListener('submit', async (event) => {
 
         status.textContent = `${games.length} jogo(s) encontrado(s):`;
         results.innerHTML = games.map((game, index) => renderResult(game, index)).join('');
-        results.querySelectorAll('.heart-btn').forEach(btn => btn.addEventListener('click', onHeartClick));
+        results.querySelectorAll('.heart-btn:not(.wishlist-btn)').forEach(btn => btn.addEventListener('click', onHeartClick));
+        results.querySelectorAll('.wishlist-btn').forEach(btn => btn.addEventListener('click', onWishlistClick));
     } catch (err) {
         status.classList.add('error');
         status.textContent = `Erro ao buscar: ${err.message}`;
@@ -51,6 +54,55 @@ async function loadCollectionIds() {
         collectionIds = new Set(games.map(game => game.id));
     } catch (err) {
         // colecao indisponivel no momento, coracoes comecam vazios
+    }
+}
+
+async function loadWishlistIds() {
+    try {
+        const response = await fetch('/api/wishlist');
+        if (!response.ok) {
+            return;
+        }
+        const games = await response.json();
+        wishlistIds = new Set(games.map(game => game.id));
+    } catch (err) {
+        // lista de desejos indisponivel no momento, estrelas comecam vazias
+    }
+}
+
+async function onWishlistClick(event) {
+    const btn = event.currentTarget;
+    const id = Number(btn.dataset.id);
+    btn.disabled = true;
+    try {
+        if (wishlistIds.has(id)) {
+            const response = await fetch(`/api/wishlist/${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                throw new Error(`Erro ${response.status}`);
+            }
+            wishlistIds.delete(id);
+            btn.classList.remove('active');
+            btn.textContent = '☆';
+        } else {
+            const response = await fetch('/api/wishlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ gameId: id })
+            });
+            if (!response.ok) {
+                throw new Error(`Erro ${response.status}`);
+            }
+            wishlistIds.add(id);
+            btn.classList.add('active');
+            btn.textContent = '⭐';
+            btn.classList.add('pop');
+            btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+        }
+    } catch (err) {
+        status.classList.add('error');
+        status.textContent = `Erro ao atualizar lista de desejos: ${err.message}`;
+    } finally {
+        btn.disabled = false;
     }
 }
 
@@ -92,6 +144,7 @@ async function onHeartClick(event) {
 
 function renderResult(game, index) {
     const inCollection = collectionIds.has(game.id);
+    const inWishlist = wishlistIds.has(game.id);
     const delay = Math.min(index * 0.05, 0.4);
     return `
         <li class="result-item" style="animation-delay: ${delay}s">
@@ -102,6 +155,7 @@ function renderResult(game, index) {
                 <span class="result-id">#${game.id}</span>
             </a>
             <button type="button" class="heart-btn ${inCollection ? 'active' : ''}" data-id="${game.id}" aria-label="Adicionar à coleção">${inCollection ? '❤️' : '🤍'}</button>
+            <button type="button" class="heart-btn wishlist-btn ${inWishlist ? 'active' : ''}" data-id="${game.id}" aria-label="Adicionar à lista de desejos">${inWishlist ? '⭐' : '☆'}</button>
         </li>
     `;
 }
