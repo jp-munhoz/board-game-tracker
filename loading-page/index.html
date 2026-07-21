@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Board Game Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#1a5c45">
+    <style>
+        :root {
+            --felt-dark: #0f3d2e;
+            --felt-light: #1a5c45;
+            --wood: #8a5a34;
+            --wood-dark: #6b4322;
+            --parchment: #f6ecd9;
+            --parchment-dark: #ecdcc0;
+            --ink: #3a2c1a;
+            --ink-soft: #6b5c47;
+            --gold: #d9a441;
+            --gold-dark: #b9832c;
+            --red: #b6402e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            font-family: "Nunito", sans-serif;
+            background: radial-gradient(circle at top, var(--felt-light), var(--felt-dark) 70%);
+            color: var(--parchment);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--parchment);
+            color: var(--ink);
+            border-radius: 20px;
+            border: 4px solid var(--wood);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+            padding: 2.25rem 1.75rem;
+            text-align: center;
+        }
+
+        .dice {
+            font-size: 3rem;
+            display: inline-block;
+            animation: roll 1.6s ease-in-out infinite;
+        }
+
+        @keyframes roll {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-18deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(18deg); }
+        }
+
+        h1 {
+            font-family: "Baloo 2", sans-serif;
+            font-size: 1.5rem;
+            margin: 0.75rem 0 0.35rem;
+        }
+
+        p {
+            margin: 0.35rem 0;
+            color: var(--ink-soft);
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 3px;
+            border-radius: 50%;
+            background: var(--gold-dark);
+            animation: bounce 1.2s ease-in-out infinite;
+        }
+
+        .dots span:nth-child(2) { animation-delay: 0.15s; }
+        .dots span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+            40% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        .dots {
+            margin: 1.1rem 0 0.4rem;
+        }
+
+        .hint {
+            margin-top: 1.4rem;
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+            opacity: 0.85;
+        }
+
+        #retry-wrap {
+            margin-top: 1.4rem;
+            display: none;
+        }
+
+        #retry-wrap.visible {
+            display: block;
+        }
+
+        #retry-link {
+            display: inline-block;
+            padding: 0.65rem 1.4rem;
+            border-radius: 999px;
+            background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 3px 0 var(--gold-dark), 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #error-msg {
+            display: none;
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        #error-msg.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <span class="dice">🎲</span>
+        <h1>Acordando o tabuleiro...</h1>
+        <p>O servidor estava descansando (plano gratuito) e já está sendo ligado. Isso costuma levar até 1 minuto.</p>
+        <div class="dots"><span></span><span></span><span></span></div>
+        <p class="hint">Você será redirecionado automaticamente assim que estiver pronto.</p>
+        <p id="error-msg">Ainda não consegui acordar o servidor. Pode tentar de novo?</p>
+        <div id="retry-wrap">
+            <a id="retry-link" href="#">Tentar entrar mesmo assim</a>
+        </div>
+    </main>
+    <script>
+        // Preencha com a URL pública do backend no Render (ex: https://board-game-tracker.onrender.com)
+        const BACKEND_URL = "https://board-game-tracker-n1o1.onrender.com";
+        const ENTRY_PATH = "/login.html";
+        const PING_ASSET = "/icons/favicon.png";
+        const PING_INTERVAL_MS = 2500;
+        const SHOW_RETRY_AFTER_MS = 45000;
+        const SHOW_ERROR_AFTER_MS = 90000;
+
+        const destination = BACKEND_URL + ENTRY_PATH;
+        document.getElementById("retry-link").href = destination;
+
+        const startedAt = Date.now();
+        let redirected = false;
+
+        function tryWakeUp() {
+            if (redirected) {
+                return;
+            }
+            const img = new Image();
+            img.onload = () => {
+                redirected = true;
+                window.location.href = destination;
+            };
+            img.onerror = scheduleNext;
+            img.src = BACKEND_URL + PING_ASSET + "?t=" + Date.now();
+        }
+
+        function scheduleNext() {
+            if (redirected) {
+                return;
+            }
+            const elapsed = Date.now() - startedAt;
+            if (elapsed >= SHOW_RETRY_AFTER_MS) {
+                document.getElementById("retry-wrap").classList.add("visible");
+            }
+            if (elapsed >= SHOW_ERROR_AFTER_MS) {
+                document.getElementById("error-msg").classList.add("visible");
+                return;
+            }
+            setTimeout(tryWakeUp, PING_INTERVAL_MS);
+        }
+
+        tryWakeUp();
+    </script>
+</body>
+</html>
