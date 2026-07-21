@@ -21,4 +21,4 @@ EXPOSE 8080
 
 # MaxRAMPercentage mais alto que o default (25%) porque o container roda so essa JVM
 # (free tier do Render tem pouca RAM, entao vale aproveitar o que tem disponivel).
-ENTRYPOINT ["sh", "-c", "java -XX:MaxRAMPercentage=75.0 -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java -XX:MaxRAMPercentage=75.0 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k -XX:MaxMetaspaceSize=128m -jar app.jar"]
