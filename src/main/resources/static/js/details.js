@@ -73,9 +73,11 @@ function render(game) {
 
     content.innerHTML = `
     <div class="fade-in">
-        <div class="game-image-wrap">
+        <div class="game-cover-row">
+            <div class="game-image-wrap">
+                ${game.imageUrl ? `<img class="game-image" src="${escapeHtml(game.imageUrl)}" alt="Capa de ${escapeHtml(game.name ?? '')}">` : ''}
+            </div>
             <div class="game-actions">${actions}</div>
-            ${game.imageUrl ? `<img class="game-image" src="${escapeHtml(game.imageUrl)}" alt="Capa de ${escapeHtml(game.name ?? '')}">` : ''}
         </div>
         <h1>🎯 ${escapeHtml(game.name ?? '')}</h1>
         <p class="subtitle">
