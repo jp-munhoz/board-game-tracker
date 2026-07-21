@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Amigos - Board Game Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1a5c45">
+    <link rel="icon" href="/icons/favicon.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <main class="board">
+        <div id="app-nav"></div>
+        <header class="board-header">
+            <span class="dice">👥</span>
+            <div>
+                <h1>Amigos</h1>
+                <p class="subtitle">Veja a coleção de quem também está no grupo</p>
+            </div>
+            <span class="dice">👥</span>
+        </header>
+
+        <p id="status" class="status"></p>
+        <ul id="results" class="results"></ul>
+    </main>
+    <script src="/js/nav.js"></script>
+    <script src="/js/amigos.js"></script>
+    <script src="/js/register-sw.js"></script>
+</body>
+</html>

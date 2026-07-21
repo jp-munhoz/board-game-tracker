@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: board-game-tracker
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    session:
+      cookie:
+        same-site: lax
+        http-only: true
+
+ludopedia:
+  base-url: https://ludopedia.com.br/api/v1
+  # access_token do app registrado em https://ludopedia.com.br/aplicativos.
+  access-token: ${LUDOPEDIA_ACCESS_TOKEN}
+  connect-timeout: 5s
+  read-timeout: 10s
+  # timeout do scrape da pagina publica do jogo (usado para obter a descricao, que a LudoAPI nao expoe)
+  scrape-timeout: 5s
