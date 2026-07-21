@@ -10,7 +10,15 @@ import java.util.Optional;
 
 public interface SessionNoteRepository extends JpaRepository<SessionNote, Long> {
 
-    List<SessionNote> findByGameSession_IdOrderByCreatedAtAsc(Long gameSessionId);
+    @Query("select sn from SessionNote sn join fetch sn.author where sn.gameSession.id = :gameSessionId order by sn.createdAt asc")
+    List<SessionNote> findByGameSession_IdOrderByCreatedAtAsc(@Param("gameSessionId") Long gameSessionId);
+
+    @Query("""
+            select sn from SessionNote sn join fetch sn.author
+            where sn.gameSession.collectionEntry.id = :collectionEntryId
+            order by sn.gameSession.id asc, sn.createdAt asc
+            """)
+    List<SessionNote> findByGameSession_CollectionEntry_Id(@Param("collectionEntryId") Long collectionEntryId);
 
     Optional<SessionNote> findByGameSession_IdAndAuthor_Id(Long gameSessionId, Long authorId);
 
@@ -24,8 +32,13 @@ public interface SessionNoteRepository extends JpaRepository<SessionNote, Long> 
 
     @Query("""
             select sn from SessionNote sn
-            where sn.author.id = :userId and sn.gameSession.collectionEntry.user.id <> :userId
-            order by sn.gameSession.createdAt desc
+            join fetch sn.author
+            join fetch sn.gameSession gs
+            join fetch gs.collectionEntry ce
+            join fetch ce.user owner
+            join fetch ce.game
+            where sn.author.id = :userId and ce.user.id <> :userId
+            order by gs.createdAt desc
             """)
     List<SessionNote> findParticipatingNotes(@Param("userId") Long userId);
 }

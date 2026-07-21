@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameSessionService {
@@ -43,10 +44,13 @@ public class GameSessionService {
     @Transactional(readOnly = true)
     public List<GameSessionResponse> list(Long userId, long gameId) {
         CollectionEntry entry = getEntry(userId, gameId);
-        return gameSessionRepository.findByCollectionEntry_IdOrderByPlayedAtDescCreatedAtDesc(entry.getId()).stream()
+        List<GameSession> sessions = gameSessionRepository.findByCollectionEntry_IdOrderByPlayedAtDescCreatedAtDesc(entry.getId());
+        var notesBySession = sessionNoteRepository.findByGameSession_CollectionEntry_Id(entry.getId()).stream()
+                .collect(Collectors.groupingBy(note -> note.getGameSession().getId()));
+        return sessions.stream()
                 .sorted(Comparator.comparing((GameSession s) -> s.getStatus() == SessionStatus.ONGOING ? 0 : 1)
                         .thenComparing(GameSession::getPlayedAt, Comparator.reverseOrder()))
-                .map(this::toResponse)
+                .map(session -> toResponse(session, notesBySession.getOrDefault(session.getId(), List.of())))
                 .toList();
     }
 
@@ -128,10 +132,12 @@ public class GameSessionService {
     }
 
     private GameSessionResponse toResponse(GameSession session) {
-        List<SessionNoteResponse> notes = sessionNoteRepository.findByGameSession_IdOrderByCreatedAtAsc(session.getId()).stream()
-                .map(this::toNoteResponse)
-                .toList();
-        return new GameSessionResponse(session.getId(), session.getPlayedAt(), session.getStatus(), notes);
+        return toResponse(session, sessionNoteRepository.findByGameSession_IdOrderByCreatedAtAsc(session.getId()));
+    }
+
+    private GameSessionResponse toResponse(GameSession session, List<SessionNote> notes) {
+        List<SessionNoteResponse> noteResponses = notes.stream().map(this::toNoteResponse).toList();
+        return new GameSessionResponse(session.getId(), session.getPlayedAt(), session.getStatus(), noteResponses);
     }
 
     private SessionNoteResponse toNoteResponse(SessionNote note) {
